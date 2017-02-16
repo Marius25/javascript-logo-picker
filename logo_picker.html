@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Logo picker</title>
+    <meta charset="utf-8" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Reinys logo picker" name="description">
+    <style type="text/css">
+    .test {
+        float: left;
+        width: 10%;
+        padding: 20px;
+    }
+    
+    .test img {
+        max-width: 100%;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="tests"></div>
+    <script id="test-template" type="text/template">
+        <div class="test">
+            <img />
+        </div>
+    </script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    const COLOR_STEP = 25;
+    const IMAGES_URL = "http://www.iconsdb.com/icons/preview/";
+    var rgb = ['255', '0', '0'];
+
+    function pickerfn(r, g, b) {
+
+        var backgroundColor = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+        var colorBright = Math.round(((parseInt(rgb[0]) * 255) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
+
+        rgb[0] = r;
+        rgb[1] = g;
+        rgb[2] = b;
+
+        if (colorBright <= 210 || (r > 150 && g < 20 && b < 20)) {
+            return "w";
+        } else if (210 < colorBright) {
+            return "";
+        }
+
+        $('.test').css('background-color', backgroundColor);
+    }
+
+    $(function() {
+        var tests = $("#tests"),
+            testTemplate = $("#test-template");
+
+        for (var i = 0; i <= 255; i += COLOR_STEP) {
+            for (var j = 0; j <= 255; j += COLOR_STEP) {
+                for (var k = 0; k <= 255; k += COLOR_STEP) {
+                    var test = $(testTemplate.html()),
+                        logoType = pickerfn(i, j, k);
+                    console.log(logoType);
+                    if (logoType === "") {
+                        test.find("img").attr("src", IMAGES_URL + "black/nike-xxl.png");
+                    } else if (logoType === "w") {
+                        test.find("img").attr("src", IMAGES_URL + "white/nike-xxl.png");
+                    }
+
+                    test.css("background-color", "rgb(" + i + "," + j + "," + k + ")");
+                    tests.append(test);
+                }
+            }
+        }
+    });
+    </script>
+</body>
+
+</html>
